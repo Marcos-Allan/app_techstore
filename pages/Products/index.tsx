@@ -47,7 +47,7 @@ export default function Products(){
                 </Pressable>
             )}
             {loading == false ? (
-                <ScrollView key={'12121212'}>
+                <ScrollView>
                     {data && data.map((card:any) => (
                         <Card
                             descont={card.descont}

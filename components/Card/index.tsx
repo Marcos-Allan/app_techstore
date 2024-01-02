@@ -31,6 +31,7 @@ export default function Card(props: CardProps){
 
     return(
         <View
+            key={props.id}        
             style={{ flex: 1, flexDirection: 'column', padding: 10, margin: 10, backgroundColor: '#d9d9d9', borderRadius: 8, position: 'relative', marginRight: 34 }}
         >
             <Image

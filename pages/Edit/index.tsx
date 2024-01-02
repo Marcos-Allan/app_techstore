@@ -1,11 +1,57 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react'
 import { useRoute } from "@react-navigation/native";
-import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { Image, Pressable, Text, TextInput, View, Alert } from "react-native";
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
+
+interface Props {
+    descont: string,
+    image: string,
+    price: string,
+    id: string,
+    action: string,
+    timestamp:string,
+}
+
 
 export default function Edit() {
     const insets = useSafeAreaInsets();
+    
+    const navigate = useNavigation().navigate
+    
+    const showAlert = () =>
+      Alert.alert(
+        'Produto não selecionado',
+        'Por favor selecione um produto primeiro',
+        [
+            {
+                text: 'cancel',
+                style: 'default',
+                onPress: () => {
+                    return
+                },
+            },
+            {
+              text: 'selecionar',
+              onPress: () => {
+                navigate('Products')
+              },
+              style: 'default',
+            },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => {
+            return
+        }},
+    );
+
+    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, id:string, action:string, timestamp:string){
+        const params:Props = { descont, price, image, id, action, timestamp }
+        navigate(rota, params)
+    }
 
     function onDelete(id:string){
         axios.delete(`https://techstore-backend.onrender.com/product/delete/${id}`)
@@ -45,304 +91,162 @@ export default function Edit() {
         })
     }
     
-    const { price, image, descont, id, action, timestamp }:any = useRoute().params
-
-
+    const produto :any = useRoute().params
 
     useEffect(() => {
-        if(action == 'ADICIONAR'){
+        if(produto && produto.action == 'ADICIONAR'){
             setNewPrice('00.00')
             setNewImage('https://via.placeholder.com/900/d9d9d9')
             setNewDescont('0')
         }else{
-            setNewPrice(price)
-            setNewImage(image)
-            setNewDescont(descont)
+            setNewPrice(produto ? produto.price : undefined)
+            setNewImage(produto ? produto.image : undefined)
+            setNewDescont(produto ? produto.descont : undefined)
         }
-    },[timestamp])
+    },[produto !== undefined ? produto.timestamp : ''])
 
     const [newImage, setNewImage] = useState<string>('')
     const [newPrice, setNewPrice] = useState<string>('')
     const [newDescont, setNewDescont] = useState<string>('')
 
     return(
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: insets.top }}>
-
-            {image && (
-                <Image
-                    style={{ width: 280, height: 160, borderRadius: 8 }}
-                    source={{
-                        uri: action !== 'ADICIONAR' ? image : newImage,
-                    }}
-                />
-            )}
-            
-            {price && (
-                <Text>
-                    {action !== 'ADICIONAR' ? price : newPrice}
-                </Text>
-            )}
-            
-            {descont && (
-                <Text>
-                    {action !== 'ADICIONAR' ? descont : newDescont}
-                </Text>
-            )}
-
-            {/* FORMULÁRIO DE ATUALIZAÇÃO OU CRIAÇÃO */}
-            <View
-                style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-            >
-                <Text style={{ width: '21%', fontSize: 12 }}>
-                    Price:
-                </Text>
-                <TextInput
-                    onChangeText={setNewPrice}
-                    value={newPrice}
-                    style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                />
-            </View>
-
-            <View
-                style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-            >
-                <Text style={{ width: '21%', fontSize: 12 }}>
-                    Descont:
-                </Text>
-                <TextInput
-                    onChangeText={setNewDescont}
-                    value={newDescont}
-                    style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                />
-            </View>
-            
-            <View
-                style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-            >
-                <Text style={{ width: '21%', fontSize: 12 }}>
-                    Image:
-                </Text>
-                <TextInput
-                    onChangeText={setNewImage}
-                    value={newImage}
-                    style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                />
-            </View>
-
-            {/* ALERTA DE EXCLUSÃO DOS PRODUTOS DO BANCO DE DADOS */}
-
-            <View style={{ flex: 1, flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, width: '100%', }}>
-                {action == 'ADICIONAR' && (
-                    <Pressable
-                        onPress={() => {
-                            onCreate(newImage, newPrice, newDescont)
+        <>
+            {produto && (produto.price !== undefined && produto.image !== undefined && produto.descont !== undefined && produto.action !== undefined) ? (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: insets.top }}>
+                    <Image
+                        style={{ width: 280, height: 160, borderRadius: 8 }}
+                        source={{
+                            uri: produto && produto.action !== 'ADICIONAR' ? produto.image : newImage,
                         }}
-                        style={{ backgroundColor: '#67d083', flexGrow: 1,  paddingVertical: 10 }}
-                        >
-                        <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
-                        >Criar</Text>
-                    </Pressable>
-                )}
+                    />
+                    
+                    <Text>
+                        {produto && produto.action !== 'ADICIONAR' ? produto.price : newPrice}
+                    </Text>
+                    
+                    <Text>
+                        {produto && produto.action !== 'ADICIONAR' ? produto.descont : newDescont}
+                    </Text>
 
-                {action == 'EDITAR' && (
-                    <Pressable
-                        onPress={() => {
-                            onUpdate(id, newImage, newPrice, newDescont)
-                        }}
-                        style={{ backgroundColor: '#64aaff', flexGrow: 1,  paddingVertical: 10 }}
+                    {/* FORMULÁRIO DE ATUALIZAÇÃO OU CRIAÇÃO */}
+                    <View
+                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
                     >
-                        <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
-                        >Atualizar</Text>
-                    </Pressable>
-                )}
+                        <Text style={{ width: '21%', fontSize: 12 }}>
+                            Price:
+                        </Text>
+                        <TextInput
+                            onChangeText={setNewPrice}
+                            value={newPrice}
+                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
+                        />
+                    </View>
 
-                {action == 'DELETAR' && (
-                    <Pressable
-                        onPress={() => {
-                            onDelete(id)
-                        }}
-                        style={{ backgroundColor: '#ff6464', flexGrow: 1,  paddingVertical: 10 }}
+                    <View
+                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
                     >
-                        <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
-                        >Deletar</Text>
-                    </Pressable>
-                )}
-            </View>
-        </View>
+                        <Text style={{ width: '21%', fontSize: 12 }}>
+                            Descont:
+                        </Text>
+                        <TextInput
+                            onChangeText={setNewDescont}
+                            value={newDescont}
+                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
+                        />
+                    </View>
+                    
+                    <View
+                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
+                    >
+                        <Text style={{ width: '21%', fontSize: 12 }}>
+                            Image:
+                        </Text>
+                        <TextInput
+                            onChangeText={setNewImage}
+                            value={newImage}
+                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
+                        />
+                    </View>
+
+                    {/* ALERTA DE EXCLUSÃO DOS PRODUTOS DO BANCO DE DADOS */}
+
+                    <View style={{ flex: 1, flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, width: '100%', }}>
+                        {produto && produto.action == 'ADICIONAR' && (
+                            <Pressable
+                                onPress={() => {
+                                    onCreate(newImage, newPrice, newDescont)
+                                }}
+                                style={{ backgroundColor: '#67d083', flexGrow: 1,  paddingVertical: 10 }}
+                                >
+                                <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
+                                >Criar</Text>
+                            </Pressable>
+                        )}
+
+                        {produto && produto.action == 'EDITAR' && (
+                            <Pressable
+                                onPress={() => {
+                                    onUpdate(produto.id, newImage, newPrice, newDescont)
+                                }}
+                                style={{ backgroundColor: '#64aaff', flexGrow: 1,  paddingVertical: 10 }}
+                            >
+                                <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
+                                >Atualizar</Text>
+                            </Pressable>
+                        )}
+
+                        {produto && produto.action == 'DELETAR' && (
+                            <Pressable
+                                onPress={() => {
+                                    onDelete(produto.id)
+                                }}
+                                style={{ backgroundColor: '#ff6464', flexGrow: 1,  paddingVertical: 10 }}
+                            >
+                                <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
+                                >Deletar</Text>
+                            </Pressable>
+                        )}
+                    </View>
+                </View>
+            ):(
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'space-around', flexDirection: 'row', width: '100%', paddingTop: insets.top }}>
+                    <View>
+                        <Ionicons
+                            name='add'
+                            style={{ fontSize: 26, backgroundColor: '#67d083', padding: 15, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            onPress={() => {
+                                const action = 'ADICIONAR'
+                                const timestamp = String(new Date().getTime())
+                                alteredInfosProduct('Edit', 'props.descont', 'props.price', 'props.image', 'props.id', action, timestamp)
+                            }}
+                        />
+                        <Text
+                            style={{ textAlign: 'center', marginTop: 10, fontSize: 12, letterSpacing: 2, color: '#000000', opacity: 0.6 }
+                        }>Criar</Text>
+                    </View>
+                    <View>
+                        <Ionicons
+                            onPress={showAlert}
+                            name='pencil'
+                            style={{ fontSize: 26, backgroundColor: '#64aaff', padding: 16, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            />
+                        <Text
+                            style={{ textAlign: 'center', marginTop: 10, fontSize: 12, letterSpacing: 2, color: '#000000', opacity: 0.6 }}
+                        >Editar</Text>
+                    </View>
+                    <View
+                    >
+                        <Ionicons
+                            onPress={showAlert}
+                            name='trash'
+                            style={{ fontSize: 26, backgroundColor: '#ff6464', padding: 16, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+                        />
+                        <Text
+                            style={{ textAlign: 'center', marginTop: 10, fontSize: 12, letterSpacing: 2, color: '#000000', opacity: 0.6 }}
+                        >Excluir</Text>
+                    </View>
+                </View>
+            )}
+        </>
     )
 }
-
-// import { useSafeAreaInsets } from 'react-native-safe-area-context';
-// import { useState, useEffect } from 'react'
-// import { useRoute } from "@react-navigation/native";
-// import { Image, Pressable, Text, TextInput, View } from "react-native";
-// import axios from 'axios'
-
-// export default function Edit() {
-//     const insets = useSafeAreaInsets();
-
-//     function onDelete(id:string){
-//         axios.delete(`https://techstore-backend.onrender.com/product/delete/${id}`)
-//         .then((response) => {
-//             console.log(response)
-//         })
-//         .catch((error) => {
-//             console.error(error)
-//         })
-//     }
-    
-//     function onCreate(image:string, price:string, descont:string){
-//         axios.post(`https://techstore-backend.onrender.com/create`, {
-//             image: image,
-//             price: price,
-//             descont: descont
-//         })
-//         .then((response) => {
-//             console.log(response)
-//         })
-//         .catch((error) => {
-//             console.error(error)
-//         })
-//     }
-
-//     function onUpdate(id:string, image:string, price:string, descont:string){
-//         axios.put(`https://techstore-backend.onrender.com/product/update/${id}`, {
-//             image: image,
-//             price: price,
-//             descont: descont,
-//         })
-//         .then((response) => {
-//             console.log(response)
-//         })
-//         .catch((error) => {
-//             console.error(error)
-//         })
-//     }
-    
-//     const { price, image, descont, id, action }:any = useRoute().params
-
-//     useEffect(() => {
-//         setNewImage(image)
-//         setNewPrice(price)
-//         setNewDescont(descont)
-//     },[])
-
-//     const [newImage, setNewImage] = useState<string>('')
-//     const [newPrice, setNewPrice] = useState<string>('')
-//     const [newDescont, setNewDescont] = useState<string>('')
-
-//     function hanlePrice(event:any){
-//         setNewPrice(event.target.value)
-//     }
-//     function hanleImage(event:any){
-//         setNewImage(event.target.value)
-//     }
-//     function hanleDescont(event:any){
-//         setNewDescont(event.target.value)
-//     }
-
-//     return(
-//         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: insets.top }}>
-
-//             {image && (
-//                 <Image
-//                     style={{ width: 280, height: 160, borderRadius: 8 }}
-//                     source={{
-//                         uri: action !== 'ADICIONAR' ? image : newImage,
-//                     }}
-//                 />
-//             )}
-//             {price && (
-//                 <Text>
-//                     {action !== 'ADICIONAR' ? price : newPrice}
-//                 </Text>
-//             )}
-            
-//             {descont && (
-//                 <Text>
-//                     {action !== 'ADICIONAR' ? descont : newDescont}
-//                 </Text>
-//             )}
-
-//             {/* FORMULÁRIO DE ATUALIZAÇÃO OU CRIAÇÃO */}
-//             <View
-//                 style={{ width: '80%', height: 30, display: 'flex', flexDirection: 'row', marginBottom: 10 }}
-//             >
-//                 <Text>
-//                     Price:
-//                 </Text>
-//                 <TextInput
-//                     onChangeText={setNewPrice}
-//                     value={newPrice}
-//                     style={{ borderStyle: 'solid', paddingLeft: 10, borderWidth: 2, borderColor: '#000000', flexGrow: 1 }}
-//                 />
-//             </View>
-
-//             <View
-//                 style={{ width: '80%', height: 30, display: 'flex', flexDirection: 'row', marginBottom: 10 }}
-//             >
-//                 <Text>
-//                     Descont:
-//                 </Text>
-//                 <TextInput
-//                     onChangeText={setNewDescont}
-//                     value={newDescont}
-//                     style={{ borderStyle: 'solid', paddingLeft: 10, borderWidth: 2, borderColor: '#000000', flexGrow: 1 }}
-//                 />
-//             </View>
-            
-//             <View
-//                 style={{ width: '80%', height: 30, display: 'flex', flexWrap: 'wrap', flexDirection: 'row', marginBottom: 10 }}
-//             >
-//                 <Text>
-//                     Image:
-//                 </Text>
-//                 <TextInput
-//                     onChangeText={setNewImage}
-//                     value={newImage}
-//                     style={{ borderStyle: 'solid', paddingLeft: 10, borderWidth: 2, borderColor: '#000000', flexGrow: 1 }}
-//                 />
-//             </View>
-
-//             {/* ALERTA DE EXCLUSÃO DOS PRODUTOS DO BANCO DE DADOS */}
-
-//             <View style={{ flex: 1, flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, width: '100%', }}>
-//                 {action == 'ADICIONAR' && (
-//                     <Pressable
-//                         onPress={() => {
-//                             onCreate(newImage, newPrice, newDescont)
-//                         }}
-//                         style={{ backgroundColor: '#67d083', flexGrow: 1,  paddingVertical: 10 }}
-//                         >
-//                         <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
-//                         >Criar</Text>
-//                     </Pressable>
-//                 )}
-
-//                 {action == 'EDITAR' && (
-//                     <Pressable
-//                         onPress={() => {
-//                             onUpdate(id, newImage, newPrice, newDescont)
-//                         }}
-//                         style={{ backgroundColor: '#64aaff', flexGrow: 1,  paddingVertical: 10 }}
-//                     >
-//                         <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
-//                         >Atualizar</Text>
-//                     </Pressable>
-//                 )}
-
-//                 {action == 'DELETAR' && (
-//                     <Pressable
-//                         onPress={() => {
-//                             onDelete(id)
-//                         }}
-//                         style={{ backgroundColor: '#ff6464', flexGrow: 1,  paddingVertical: 10 }}
-//                     >
-//                         <Text style={{ textTransform: 'uppercase', color: '#f2f2f2', textAlign: 'center', fontWeight: '600'}}
-//                         >Deletar</Text>
-//                     </Pressable>
-//                 )}
-//             </View>
-//         </View>
-//     )
-// }
