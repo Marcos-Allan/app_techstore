@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons'
-import { Image, Pressable, Text, View } from "react-native";
+import { Image, Pressable, Text, View, Alert, Modal } from "react-native";
 
 interface CardProps {
     image: string,
@@ -21,7 +22,7 @@ interface Props {
 export default function Card(props: CardProps){
 
     const navigate = useNavigation().navigate
-    
+    const [modalVisible, setModalVisible] = useState(false);
     
     function alteredInfosProduct(rota:string, descont:string, price:string, image:string, id:string, action:string, timestamp:string){
 
@@ -30,9 +31,12 @@ export default function Card(props: CardProps){
     }
 
     return(
-        <View
+        <Pressable
             key={props.id}        
             style={{ flex: 1, flexDirection: 'column', padding: 10, margin: 10, backgroundColor: '#d9d9d9', borderRadius: 8, position: 'relative', marginRight: 34 }}
+            onPress={() => {
+                setModalVisible(true)
+            }}
         >
             <Image
                 style={{ width: 280, height: 160, borderRadius: 8 }}
@@ -107,6 +111,103 @@ export default function Card(props: CardProps){
                     />
                 </View>
             </View>
-        </View>
+
+            {/* MODAL */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+            }}>
+                <View style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#d9d9d9d9',
+                    marginTop: -20,
+                }}>
+                    <View style={{
+                        width: '85%',
+                        backgroundColor: '#ffffff',
+                        borderRadius: 8,
+                        overflow: 'hidden',
+                        paddingTop: 25,
+                        alignItems: 'center',
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2, },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                        position: 'relative'
+                    }}>
+                        <Pressable
+                            style={{ position: 'absolute', top:'5%', right: '3%', }}
+                            onPress={() => setModalVisible(false)}
+                        >
+                            <Ionicons name='close' style={{ fontSize: 16 }} />
+                        </Pressable>
+
+                        <Text style={{ marginBottom: 15, textAlign: 'center', marginHorizontal: 20, letterSpacing: 2, lineHeight: 24, }}>
+                            O que você deseja fazer com o Produto?
+                        </Text>
+
+                        {/* BOTÔES DE FUNCIONALIDADES */}
+                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                            <Pressable
+                                style={[
+                                    {flexGrow: 1, width: '50%', padding: 10, elevation: 2,}
+                                    ,{
+                                    backgroundColor: '#ff6464',
+                                }]}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible)
+                                    const action = 'DELETAR'
+                                    const timestamp = String(new Date().getTime())
+                                    alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#ffffff',
+                                        fontWeight: '400',
+                                        letterSpacing: 2,
+                                        textAlign: 'center',
+                                        fontSize: 12,
+                                        textTransform: 'uppercase',
+                                    }}
+                                    >Deletar</Text>
+                            </Pressable>
+                            
+                            <Pressable
+                                style={[
+                                    { flexGrow: 1, width: '50%', padding: 10, elevation: 2 }
+                                    ,{
+                                        backgroundColor: '#64aaff',
+                                    }]}
+                                    onPress={() => {
+                                        setModalVisible(!modalVisible)
+                                        const action = 'EDITAR'
+                                        const timestamp = String(new Date().getTime())
+                                        alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                                    }}
+                            >
+                                <Text
+                                    style={{
+                                        color: '#ffffff',
+                                        fontWeight: '400',
+                                        letterSpacing: 2,
+                                        textAlign: 'center',
+                                        fontSize: 12,
+                                        textTransform: 'uppercase',
+                                    }}
+                                >Editar</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        </Pressable>
     )
 }

@@ -1,7 +1,7 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react'
 import { useRoute } from "@react-navigation/native";
-import { Image, Pressable, Text, TextInput, View, Alert } from "react-native";
+import { Image, Pressable, Text, TextInput, View, Alert, Modal } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
@@ -15,39 +15,13 @@ interface Props {
     timestamp:string,
 }
 
-
 export default function Edit() {
     const insets = useSafeAreaInsets();
     
     const navigate = useNavigation().navigate
     
-    const showAlert = () =>
-      Alert.alert(
-        'Produto não selecionado',
-        'Por favor selecione um produto primeiro',
-        [
-            {
-                text: 'cancel',
-                style: 'default',
-                onPress: () => {
-                    return
-                },
-            },
-            {
-              text: 'selecionar',
-              onPress: () => {
-                navigate('Products')
-              },
-              style: 'default',
-            },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => {
-            return
-        }},
-    );
-
+    const [modalVisible, setModalVisible] = useState(false);
+    
     function alteredInfosProduct(rota:string, descont:string, price:string, image:string, id:string, action:string, timestamp:string){
         const params:Props = { descont, price, image, id, action, timestamp }
         navigate(rota, params)
@@ -226,7 +200,7 @@ export default function Edit() {
                     </View>
                     <View>
                         <Ionicons
-                            onPress={showAlert}
+                            onPress={() => setModalVisible(true)}
                             name='pencil'
                             style={{ fontSize: 26, backgroundColor: '#64aaff', padding: 16, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                             />
@@ -237,7 +211,7 @@ export default function Edit() {
                     <View
                     >
                         <Ionicons
-                            onPress={showAlert}
+                            onPress={() => setModalVisible(true)}
                             name='trash'
                             style={{ fontSize: 26, backgroundColor: '#ff6464', padding: 16, borderRadius: 30, display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
                         />
@@ -245,6 +219,97 @@ export default function Edit() {
                             style={{ textAlign: 'center', marginTop: 10, fontSize: 12, letterSpacing: 2, color: '#000000', opacity: 0.6 }}
                         >Excluir</Text>
                     </View>
+
+                    {/* MODAL */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setModalVisible(!modalVisible);
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: '#d9d9d997',
+                            marginTop: -20,
+                        }}>
+                            <View style={{
+                        width: '85%',
+                        backgroundColor: '#ffffff',
+                        borderRadius: 8,
+                        overflow: 'hidden',
+                        paddingTop: 25,
+                        alignItems: 'center',
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 2, },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                        position: 'relative'
+                    }}>
+                        <Pressable
+                            style={{ position: 'absolute', top:'5%', right: '3%', }}
+                            onPress={() => setModalVisible(false)}
+                        >
+                            <Ionicons name='close' style={{ fontSize: 16 }} />
+                        </Pressable>
+                                <Text style={{ marginBottom: 15, textAlign: 'center', marginHorizontal: 20, letterSpacing: 2, lineHeight: 24, }}>
+                                    Por favor Selecione Um Produto Primeiro
+                                </Text>
+
+                                {/* BOTÔES DE FUNCIONALIDADES */}
+                                <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                    <Pressable
+                                        style={[
+                                            {flexGrow: 1, width: '50%', padding: 10, elevation: 2,}
+                                            ,{
+                                            backgroundColor: '#ff6464',
+                                        }]}
+                                        onPress={() => setModalVisible(!modalVisible)}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: '#ffffff',
+                                                fontWeight: '400',
+                                                letterSpacing: 2,
+                                                textAlign: 'center',
+                                                fontSize: 12,
+                                                textTransform: 'uppercase',
+                                            }}
+                                            >Cancelar</Text>
+                                    </Pressable>
+                                    
+                                    <Pressable
+                                        style={[
+                                            { flexGrow: 1, width: '50%', padding: 10, elevation: 2 }
+                                            ,{
+                                                backgroundColor: '#64aaff',
+                                            }]}
+                                            onPress={() => {
+                                                setModalVisible(!modalVisible)
+                                                setTimeout(() => {                                                    
+                                                    navigate('Products')
+                                                }, 10);
+                                            }}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: '#ffffff',
+                                                fontWeight: '400',
+                                                letterSpacing: 2,
+                                                textAlign: 'center',
+                                                fontSize: 12,
+                                                textTransform: 'uppercase',
+                                            }}
+                                        >Selecionar</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
             )}
         </>
