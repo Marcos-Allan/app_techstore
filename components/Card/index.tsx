@@ -114,7 +114,7 @@ export default function Card(props: CardProps){
 
             {/* MODAL */}
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
@@ -125,7 +125,6 @@ export default function Card(props: CardProps){
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: '#d9d9d9d9',
                     marginTop: -20,
                 }}>
                     <View style={{

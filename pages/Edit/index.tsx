@@ -222,7 +222,7 @@ export default function Edit() {
 
                     {/* MODAL */}
                     <Modal
-                        animationType="slide"
+                        animationType="fade"
                         transparent={true}
                         visible={modalVisible}
                         onRequestClose={() => {
@@ -233,7 +233,6 @@ export default function Edit() {
                             flex: 1,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            backgroundColor: '#d9d9d997',
                             marginTop: -20,
                         }}>
                             <View style={{
