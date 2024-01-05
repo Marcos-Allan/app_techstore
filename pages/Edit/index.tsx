@@ -10,6 +10,8 @@ interface Props {
     descont: string,
     image: string,
     price: string,
+    description: string,
+    stars: string,
     id: string,
     action: string,
     timestamp:string,
@@ -22,8 +24,8 @@ export default function Edit() {
     
     const [modalVisible, setModalVisible] = useState(false);
     
-    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, id:string, action:string, timestamp:string){
-        const params:Props = { descont, price, image, id, action, timestamp }
+    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, description:string, stars:string, id:string, action:string, timestamp:string){
+        const params:Props = { descont, price, image, description, stars, id, action, timestamp }
         navigate(rota, params)
     }
 
@@ -37,11 +39,13 @@ export default function Edit() {
         })
     }
     
-    function onCreate(image:string, price:string, descont:string){
+    function onCreate(image:string, price:string, descont:string, description: string, stars: string){
         axios.post(`https://techstore-backend.onrender.com/create`, {
             image: image,
             price: price,
-            descont: descont
+            descont: descont,
+            description: description,
+            stars: stars,
         })
         .then((response) => {
             console.log(response)
@@ -51,11 +55,13 @@ export default function Edit() {
         })
     }
 
-    function onUpdate(id:string, image:string, price:string, descont:string){
+    function onUpdate(id:string, image:string, price:string, descont:string, description: string, stars: string){
         axios.put(`https://techstore-backend.onrender.com/product/update/${id}`, {
             image: image,
             price: price,
             descont: descont,
+            description: description,
+            stars: stars,
         })
         .then((response) => {
             console.log(response)
@@ -72,20 +78,33 @@ export default function Edit() {
             setNewPrice('00.00')
             setNewImage('https://via.placeholder.com/900/d9d9d9')
             setNewDescont('0')
+            setNewDescription('Produto Qualquer')
+            setNewStars('0')
         }else{
             setNewPrice(produto ? produto.price : undefined)
             setNewImage(produto ? produto.image : undefined)
             setNewDescont(produto ? produto.descont : undefined)
+            setNewDescription(produto ? produto.description : 'pr')
+            setNewStars(produto ? produto.stars : '0')
         }
     },[produto !== undefined ? produto.timestamp : ''])
 
     const [newImage, setNewImage] = useState<string>('')
     const [newPrice, setNewPrice] = useState<string>('')
     const [newDescont, setNewDescont] = useState<string>('')
+    const [newDescription, setNewDescription] = useState<string>('')
+    const [newStars, setNewStars] = useState<string>('')
 
     return(
         <>
-            {produto && (produto.price !== undefined && produto.image !== undefined && produto.descont !== undefined && produto.action !== undefined) ? (
+            {produto && (
+                    produto.price !== undefined && 
+                    produto.image !== undefined &&
+                    produto.descont !== undefined &&
+                    produto.action !== undefined 
+                    // produto.description !== undefined &&
+                    // produto.stars !== undefined 
+                    ) ? (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: insets.top }}>
                     <Image
                         style={{ width: 280, height: 160, borderRadius: 8 }}
@@ -142,13 +161,39 @@ export default function Edit() {
                         />
                     </View>
 
+                    <View
+                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
+                    >
+                        <Text style={{ width: '21%', fontSize: 12 }}>
+                            Description:
+                        </Text>
+                        <TextInput
+                            onChangeText={setNewDescription}
+                            value={newDescription}
+                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
+                        />
+                    </View>
+
+                    <View
+                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
+                    >
+                        <Text style={{ width: '21%', fontSize: 12 }}>
+                            Stars:
+                        </Text>
+                        <TextInput
+                            onChangeText={setNewStars}
+                            value={newStars}
+                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
+                        />
+                    </View>
+
                     {/* ALERTA DE EXCLUSÃO DOS PRODUTOS DO BANCO DE DADOS */}
 
                     <View style={{ flex: 1, flexDirection: 'row', position: 'absolute', bottom: 0, left: 0, width: '100%', }}>
                         {produto && produto.action == 'ADICIONAR' && (
                             <Pressable
                                 onPress={() => {
-                                    onCreate(newImage, newPrice, newDescont)
+                                    onCreate(newImage, newPrice, newDescont, newDescont, newStars)
                                 }}
                                 style={{ backgroundColor: '#67d083', flexGrow: 1,  paddingVertical: 10 }}
                                 >
@@ -160,7 +205,7 @@ export default function Edit() {
                         {produto && produto.action == 'EDITAR' && (
                             <Pressable
                                 onPress={() => {
-                                    onUpdate(produto.id, newImage, newPrice, newDescont)
+                                    onUpdate(produto.id, newImage, newPrice, newDescont, newDescription, newStars)
                                 }}
                                 style={{ backgroundColor: '#64aaff', flexGrow: 1,  paddingVertical: 10 }}
                             >
@@ -191,7 +236,7 @@ export default function Edit() {
                             onPress={() => {
                                 const action = 'ADICIONAR'
                                 const timestamp = String(new Date().getTime())
-                                alteredInfosProduct('Edit', 'props.descont', 'props.price', 'props.image', 'props.id', action, timestamp)
+                                alteredInfosProduct('Edit', 'props.descont', 'props.price', 'props.image', 'props.description', 'props.stars', 'props.id', action, timestamp)
                             }}
                         />
                         <Text

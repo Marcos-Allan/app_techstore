@@ -7,6 +7,8 @@ interface CardProps {
     image: string,
     descont: string,
     price: string,
+    description: string,
+    stars: string,
     id: string,
 }
 
@@ -14,6 +16,8 @@ interface Props {
     descont: string,
     image: string,
     price: string,
+    description: string,
+    stars: string,
     id: string,
     action: string,
     timestamp:string,
@@ -24,9 +28,9 @@ export default function Card(props: CardProps){
     const navigate = useNavigation().navigate
     const [modalVisible, setModalVisible] = useState(false);
     
-    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, id:string, action:string, timestamp:string){
+    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, description:string, stars:string, id:string, action:string, timestamp:string){
 
-        const params:Props = { descont, price, image, id, action, timestamp }
+        const params:Props = { descont, price, image, description, stars, id, action, timestamp }
         navigate(rota, params)
     }
 
@@ -79,7 +83,7 @@ export default function Card(props: CardProps){
                         onPress={() => {
                             const action = 'ADICIONAR'
                             const timestamp = String(new Date().getTime())
-                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
                         }}
                         name='add' 
                     />
@@ -92,7 +96,7 @@ export default function Card(props: CardProps){
                         onPress={() => {
                             const action = 'EDITAR'
                             const timestamp = String(new Date().getTime())
-                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
                         }}
                         name='pencil' 
                     />
@@ -105,7 +109,7 @@ export default function Card(props: CardProps){
                         onPress={() => {
                             const action = 'DELETAR'
                             const timestamp = String(new Date().getTime())
-                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
                         }}
                         name='trash' 
                     />
@@ -164,7 +168,7 @@ export default function Card(props: CardProps){
                                     setModalVisible(!modalVisible)
                                     const action = 'DELETAR'
                                     const timestamp = String(new Date().getTime())
-                                    alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                                    alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
                                 }}
                             >
                                 <Text
@@ -189,7 +193,7 @@ export default function Card(props: CardProps){
                                         setModalVisible(!modalVisible)
                                         const action = 'EDITAR'
                                         const timestamp = String(new Date().getTime())
-                                        alteredInfosProduct('Edit', props.descont, props.price, props.image, props.id, action, timestamp)
+                                        alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
                                     }}
                             >
                                 <Text
