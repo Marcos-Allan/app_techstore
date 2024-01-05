@@ -53,6 +53,8 @@ export default function Products(){
                             descont={card.descont}
                             image={card.image}
                             price={card.price}
+                            description={card.description}
+                            stars={card.stars}
                             id={card._id}
                         />  
                     ))}

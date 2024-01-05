@@ -48,7 +48,9 @@ export default function Card(props: CardProps){
                     uri: props.image,
                 }}
             />
-            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 5, width: '100%' }}>
+            <View
+                style={{ flex: 1, flexDirection: 'column', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 5, width: '100%' }}
+            >
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
                     <Text style={{ flexGrow: 1 }}>
                         Preço Original: 
@@ -71,6 +73,22 @@ export default function Card(props: CardProps){
                     </Text>
                     <Text>
                         {props.descont}%
+                    </Text>
+                </View>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
+                    <Text style={{ flexGrow: 1 }}>
+                        Stars: 
+                    </Text>
+                    <Text>
+                        {props.stars}
+                    </Text>
+                </View>
+                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: "space-between", alignItems: 'center'}}>
+                    <Text style={{ flexGrow: 1 }}>
+                        Description: 
+                    </Text>
+                    <Text>
+                        {props.description}
                     </Text>
                 </View>
             </View>

@@ -1,7 +1,7 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useEffect } from 'react'
 import { useRoute } from "@react-navigation/native";
-import { Image, Pressable, Text, TextInput, View, Alert, Modal } from "react-native";
+import { Image, Pressable, Text, TextInput, View, Alert, Modal, ScrollView } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios'
@@ -101,9 +101,9 @@ export default function Edit() {
                     produto.price !== undefined && 
                     produto.image !== undefined &&
                     produto.descont !== undefined &&
-                    produto.action !== undefined 
-                    // produto.description !== undefined &&
-                    // produto.stars !== undefined 
+                    produto.action !== undefined &&
+                    produto.description !== undefined &&
+                    produto.stars !== undefined 
                     ) ? (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: insets.top }}>
                     <Image
@@ -112,80 +112,74 @@ export default function Edit() {
                             uri: produto && produto.action !== 'ADICIONAR' ? produto.image : newImage,
                         }}
                     />
-                    
-                    <Text>
-                        {produto && produto.action !== 'ADICIONAR' ? produto.price : newPrice}
-                    </Text>
-                    
-                    <Text>
-                        {produto && produto.action !== 'ADICIONAR' ? produto.descont : newDescont}
-                    </Text>
 
                     {/* FORMULÁRIO DE ATUALIZAÇÃO OU CRIAÇÃO */}
-                    <View
-                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-                    >
-                        <Text style={{ width: '21%', fontSize: 12 }}>
-                            Price:
-                        </Text>
-                        <TextInput
-                            onChangeText={setNewPrice}
-                            value={newPrice}
-                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                        />
-                    </View>
+                    <ScrollView style={{ width: '95%', backgroundColor: '#d9d9d9', borderTopLeftRadius: 35, borderTopRightRadius: 35, marginTop: 20 }}>
+                        <View
+                            style={{ width: '100%', marginTop: 20, display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 20, marginHorizontal: 'auto', paddingHorizontal: 20 }}
+                        >
+                            <Text style={{ width: '100%', fontSize: 18, textAlign: 'center', opacity: 0.5, letterSpacing: 3, fontWeight: '300' }}>
+                                Price
+                            </Text>
+                            <TextInput
+                                onChangeText={setNewPrice}
+                                value={newPrice}
+                                style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
+                            />
+                        </View>
 
-                    <View
-                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-                    >
-                        <Text style={{ width: '21%', fontSize: 12 }}>
-                            Descont:
-                        </Text>
-                        <TextInput
-                            onChangeText={setNewDescont}
-                            value={newDescont}
-                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                        />
-                    </View>
-                    
-                    <View
-                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-                    >
-                        <Text style={{ width: '21%', fontSize: 12 }}>
-                            Image:
-                        </Text>
-                        <TextInput
-                            onChangeText={setNewImage}
-                            value={newImage}
-                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                        />
-                    </View>
+                        <View
+                            style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 20, margin: 'auto', paddingHorizontal: 20 }}
+                        >
+                            <Text style={{ width: '100%', fontSize: 18, textAlign: 'center', opacity: 0.5, letterSpacing: 3, fontWeight: '300' }}>
+                                Descont
+                            </Text>
+                            <TextInput
+                                onChangeText={setNewDescont}
+                                value={newDescont}
+                                style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
+                            />
+                        </View>
+                        
+                        <View
+                            style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 20, marginHorizontal: 'auto', paddingHorizontal: 20 }}
+                        >
+                            <Text style={{ width: '100%', fontSize: 18, textAlign: 'center', opacity: 0.5, letterSpacing: 3, fontWeight: '300' }}>
+                                Image
+                            </Text>
+                            <TextInput
+                                onChangeText={setNewImage}
+                                value={newImage}
+                                style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
+                                />
+                        </View>
+                        
+                        <View
+                            style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 20, marginHorizontal: 'auto', paddingHorizontal: 20 }}
+                            >
+                            <Text style={{ width: '100%', fontSize: 18, textAlign: 'center', opacity: 0.5, letterSpacing: 3, fontWeight: '300' }}>
+                                Stars
+                            </Text>
+                            <TextInput
+                                onChangeText={setNewStars}
+                                value={newStars}
+                                style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
+                                />
+                        </View>
 
-                    <View
-                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-                    >
-                        <Text style={{ width: '21%', fontSize: 12 }}>
-                            Description:
-                        </Text>
-                        <TextInput
-                            onChangeText={setNewDescription}
-                            value={newDescription}
-                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                        />
-                    </View>
-
-                    <View
-                        style={{ width: '80%', height: 30, display: 'flex', justifyContent: 'center', flexDirection: 'row', marginBottom: 10 }}
-                    >
-                        <Text style={{ width: '21%', fontSize: 12 }}>
-                            Stars:
-                        </Text>
-                        <TextInput
-                            onChangeText={setNewStars}
-                            value={newStars}
-                            style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '90%' }}
-                        />
-                    </View>
+                        <View
+                            style={{ width: '100%', height: 'auto', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 40, paddingBottom: 40, paddingHorizontal: 20 }}
+                        >
+                            <Text style={{ width: '100%', fontSize: 18, textAlign: 'center', opacity: 0.5, letterSpacing: 3, fontWeight: '300' }}>
+                                Description
+                            </Text>
+                            <TextInput
+                                onChangeText={setNewDescription}
+                                value={newDescription}
+                                style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
+                            />
+                        </View>
+                    </ScrollView>
 
                     {/* ALERTA DE EXCLUSÃO DOS PRODUTOS DO BANCO DE DADOS */}
 
