@@ -56,6 +56,7 @@ export default function Products(){
                             description={card.description}
                             stars={card.stars}
                             id={card._id}
+                            keywords={card.keywords}
                         />  
                     ))}
                 </ScrollView>

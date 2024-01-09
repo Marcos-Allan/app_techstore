@@ -9,6 +9,7 @@ interface CardProps {
     price: string,
     description: string,
     stars: string,
+    keywords: string,
     id: string,
 }
 
@@ -18,6 +19,7 @@ interface Props {
     price: string,
     description: string,
     stars: string,
+    keywords: string,
     id: string,
     action: string,
     timestamp:string,
@@ -28,9 +30,9 @@ export default function Card(props: CardProps){
     const navigate = useNavigation().navigate
     const [modalVisible, setModalVisible] = useState(false);
     
-    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, description:string, stars:string, id:string, action:string, timestamp:string){
+    function alteredInfosProduct(rota:string, descont:string, price:string, image:string, description:string, stars:string, keywords:string, id:string, action:string, timestamp:string){
 
-        const params:Props = { descont, price, image, description, stars, id, action, timestamp }
+        const params:Props = { descont, price, image, description, stars, keywords, id, action, timestamp }
         navigate(rota, params)
     }
 
@@ -91,6 +93,14 @@ export default function Card(props: CardProps){
                         {props.description}
                     </Text>
                 </View>
+                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: "space-between", alignItems: 'center'}}>
+                    <Text style={{ flexGrow: 1 }}>
+                        KeyWords: 
+                    </Text>
+                    <Text>
+                        {props.keywords}
+                    </Text>
+                </View>
             </View>
 
             <View style={{ position: 'absolute', top: 0, right: -34, width: 30, height: '100%' }}>
@@ -101,7 +111,7 @@ export default function Card(props: CardProps){
                         onPress={() => {
                             const action = 'ADICIONAR'
                             const timestamp = String(new Date().getTime())
-                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
+                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                         }}
                         name='add' 
                     />
@@ -114,7 +124,7 @@ export default function Card(props: CardProps){
                         onPress={() => {
                             const action = 'EDITAR'
                             const timestamp = String(new Date().getTime())
-                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
+                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                         }}
                         name='pencil' 
                     />
@@ -127,7 +137,7 @@ export default function Card(props: CardProps){
                         onPress={() => {
                             const action = 'DELETAR'
                             const timestamp = String(new Date().getTime())
-                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
+                            alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                         }}
                         name='trash' 
                     />
@@ -186,7 +196,7 @@ export default function Card(props: CardProps){
                                     setModalVisible(!modalVisible)
                                     const action = 'DELETAR'
                                     const timestamp = String(new Date().getTime())
-                                    alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
+                                    alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                                 }}
                             >
                                 <Text
@@ -211,7 +221,7 @@ export default function Card(props: CardProps){
                                         setModalVisible(!modalVisible)
                                         const action = 'EDITAR'
                                         const timestamp = String(new Date().getTime())
-                                        alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.id, action, timestamp)
+                                        alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                                     }}
                             >
                                 <Text
