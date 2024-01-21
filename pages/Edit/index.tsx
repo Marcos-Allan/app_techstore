@@ -4,6 +4,7 @@ import { useRoute } from "@react-navigation/native";
 import { Image, Pressable, Text, TextInput, View, Alert, Modal, ScrollView } from "react-native";
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from "@react-navigation/native";
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios'
 
 interface Props {
@@ -24,11 +25,47 @@ export default function Edit() {
     const navigate = useNavigation().navigate
     
     const [modalVisible, setModalVisible] = useState(false);
+    const [slc, setSlc] = useState<any>();
+
     
     function alteredInfosProduct(rota:string, descont:string, price:string, image:string, description:string, stars:string, keywords:string, id:string, action:string, timestamp:string){
         const params:Props = { descont, price, image, description, stars, keywords, id, action, timestamp }
         navigate(rota, params)
     }
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [3, 4],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.canceled) {
+          setNewImage(result.assets[0].uri);
+          const name = result.assets[0].uri.substring(result.assets[0].uri.lastIndexOf('/') + 1, result.assets[0].uri.length)
+          const uri = result.assets[0].uri
+          const type = 'image/' + name.split('.')[1]
+          const formData = new FormData()
+          formData.append('image', JSON.parse(JSON.stringify({
+            name: name,
+            uri: uri,
+            type: type
+          })))
+            setSlc({
+                uri:uri as any,
+                name:'file' as any,
+                type:type
+            })
+            formData.append('price', newPrice)
+            formData.append('descont', newDescont)
+            formData.append('description', newDescription)
+            formData.append('keywords', newKeyWords)
+        }
+      };
 
     function onDelete(id:string){
         axios.delete(`https://techstore-backend.onrender.com/product/delete/${id}`)
@@ -40,15 +77,29 @@ export default function Edit() {
         })
     }
     
-    function onCreate(image:string, price:string, descont:string, description: string, stars: string, keywords:string){
-        axios.post(`https://techstore-backend.onrender.com/create`, {
-            image: image,
-            price: price,
-            descont: descont,
-            description: description,
-            stars: stars,
-            keywords: keywords
+    function onCreate(image:string, price:string, descont:string, description: string, stars: string, keywords:string, slc:any){
+        const formData = new FormData()
+        
+        if(slc){
+            formData.append('file', JSON.parse(JSON.stringify({
+                name: slc.name,
+                uri: slc.uri,
+                type: slc.type,
+            })))
+        }else{
+            formData.append('image', newImage)
+        }
+        formData.append('price', newPrice)
+        formData.append('descont', newDescont)
+        formData.append('description', newDescription)
+        formData.append('keywords', newKeyWords)
+
+        axios.post(`https://techstore-backend.onrender.com/create`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
         })
+        
         .then((response) => {
             console.log(response)
         })
@@ -90,8 +141,7 @@ export default function Edit() {
             setNewDescont(produto ? produto.descont : undefined)
             setNewDescription(produto ? produto.description : 'pr')
             setNewStars(produto ? produto.stars : '0')
-            setNewKeyWords(produto ? produto.keywords : ['não tem palavras chaves'])
-            console.log(produto.keywords)
+            setNewKeyWords(produto ? produto.keywords : 'não tem palavras chaves')
         }
     },[produto !== undefined ? produto.timestamp : ''])
 
@@ -102,6 +152,29 @@ export default function Edit() {
     const [newStars, setNewStars] = useState<string>('')
     const [newKeyWords, setNewKeyWords] = useState<string>('')
 
+    function addedFormData(name:any='', uri:any='', type:any=''){
+        const formData = new FormData()
+        if(name !== '' && uri !== '' && type ==! ''){
+            setSlc({
+                name:name,
+                uri:uri,
+                type:type
+            })
+            formData.append('file', JSON.parse(JSON.stringify({
+                name: name,
+                uri: uri,
+                type: type,
+            })))
+        }else{
+            formData.append('image', newImage)
+        }
+        formData.append('price', newPrice)
+        formData.append('descont', newDescont)
+        formData.append('description', newDescription)
+        formData.append('keywords', newKeyWords)
+        return formData
+    }
+
     return(
         <>
             {produto && (
@@ -110,7 +183,8 @@ export default function Edit() {
                     produto.descont !== undefined &&
                     produto.action !== undefined &&
                     produto.description !== undefined &&
-                    produto.stars !== undefined 
+                    produto.stars !== undefined &&
+                    produto.keywords !== undefined
                     ) ? (
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: insets.top }}>
                     <Image
@@ -158,7 +232,7 @@ export default function Edit() {
                                 onChangeText={setNewImage}
                                 value={newImage}
                                 style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
-                                />
+                            />
                         </View>
                         
                         <View
@@ -199,6 +273,13 @@ export default function Edit() {
                                 style={{ borderStyle: 'solid', paddingHorizontal: 10, borderWidth: 2, borderColor: '#000000', width: '100%', flexGrow: 1 }}
                             />
                         </View>
+                        <View
+                            style={{ width: '100%', height: 'auto', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 40, paddingBottom: 40, paddingHorizontal: 20 }}
+                        >
+                            <Pressable onPress={pickImage} >
+                                <Text>Selecione Uma Imagem</Text>
+                            </Pressable>
+                        </View>
                     </ScrollView>
 
                     {/* ALERTA DE EXCLUSÃO DOS PRODUTOS DO BANCO DE DADOS */}
@@ -207,7 +288,7 @@ export default function Edit() {
                         {produto && produto.action == 'ADICIONAR' && (
                             <Pressable
                                 onPress={() => {
-                                    onCreate(newImage, newPrice, newDescont, newDescont, newStars, newKeyWords)
+                                    onCreate(newImage, newPrice, newDescont, newDescont, newStars, newKeyWords, slc)
                                 }}
                                 style={{ backgroundColor: '#67d083', flexGrow: 1,  paddingVertical: 10 }}
                                 >
@@ -250,7 +331,7 @@ export default function Edit() {
                             onPress={() => {
                                 const action = 'ADICIONAR'
                                 const timestamp = String(new Date().getTime())
-                                alteredInfosProduct('Edit', 'props.descont', 'props.price', 'props.image', 'props.description', 'props.stars', ['props.keywords'], 'props.id', action, timestamp)
+                                alteredInfosProduct('Edit', 'props.descont', 'props.price', 'props.image', 'props.description', 'props.stars', 'props.keywords', 'props.id', action, timestamp,)
                             }}
                         />
                         <Text
