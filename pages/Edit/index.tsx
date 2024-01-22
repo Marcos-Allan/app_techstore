@@ -46,24 +46,26 @@ export default function Edit() {
     
         if (!result.canceled) {
           setNewImage(result.assets[0].uri);
-          const name = result.assets[0].uri.substring(result.assets[0].uri.lastIndexOf('/') + 1, result.assets[0].uri.length)
+          const filename = result.assets[0].uri.substring(result.assets[0].uri.lastIndexOf('/') + 1, result.assets[0].uri.length)
           const uri = result.assets[0].uri
-          const type = 'image/' + name.split('.')[1]
+          const type = filename.split('.')[1]
           const formData = new FormData()
           formData.append('image', JSON.parse(JSON.stringify({
-            name: name,
+            name: filename,
             uri: uri,
-            type: type
+            type: 'image/' + type
           })))
             setSlc({
-                uri:uri as any,
-                name:'file' as any,
-                type:type
+                name:filename,
+                uri:uri,
+                type:'image/' + type
             })
             formData.append('price', newPrice)
             formData.append('descont', newDescont)
             formData.append('description', newDescription)
+            formData.append('stars', newStars)
             formData.append('keywords', newKeyWords)
+            console.log(type)
         }
       };
 
@@ -71,6 +73,7 @@ export default function Edit() {
         axios.delete(`https://techstore-backend.onrender.com/product/delete/${id}`)
         .then((response) => {
             console.log(response)
+            navigate('Products')
         })
         .catch((error) => {
             console.error(error)
@@ -92,6 +95,7 @@ export default function Edit() {
         formData.append('price', newPrice)
         formData.append('descont', newDescont)
         formData.append('description', newDescription)
+        formData.append('stars', newStars)
         formData.append('keywords', newKeyWords)
 
         axios.post(`https://techstore-backend.onrender.com/create`, formData, {
@@ -102,23 +106,39 @@ export default function Edit() {
         
         .then((response) => {
             console.log(response)
+            navigate('Products')
         })
         .catch((error) => {
             console.error(error)
         })
     }
 
-    function onUpdate(id:string, image:string, price:string, descont:string, description: string, stars: string, keywords:string){
-        axios.put(`https://techstore-backend.onrender.com/product/update/${id}`, {
-            image: image,
-            price: price,
-            descont: descont,
-            description: description,
-            stars: stars,
-            keywords: keywords,
+    function onUpdate(id:string, image:string, price:string, descont:string, description: string, stars: string, keywords:string, slc:any){
+        const formData = new FormData()
+        
+        if(slc){
+            formData.append('file', JSON.parse(JSON.stringify({
+                name: slc.name,
+                uri: slc.uri,
+                type: slc.type,
+            })))
+        }else{
+            formData.append('image', newImage)
+        }
+        formData.append('price', newPrice)
+        formData.append('descont', newDescont)
+        formData.append('description', newDescription)
+        formData.append('stars', newStars)
+        formData.append('keywords', newKeyWords)
+
+        axios.put(`https://techstore-backend.onrender.com/product/update/${id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+              },
         })
         .then((response) => {
             console.log(response)
+            navigate('Products')
         })
         .catch((error) => {
             console.error(error)
@@ -262,7 +282,7 @@ export default function Edit() {
                         </View>
                         
                         <View
-                            style={{ width: '100%', height: 'auto', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 40, paddingBottom: 40, paddingHorizontal: 20 }}
+                            style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 20, marginHorizontal: 'auto', paddingHorizontal: 20 }}
                         >
                             <Text style={{ width: '100%', fontSize: 18, textAlign: 'center', opacity: 0.5, letterSpacing: 3, fontWeight: '300' }}>
                                 KeyWords
@@ -276,8 +296,11 @@ export default function Edit() {
                         <View
                             style={{ width: '100%', height: 'auto', display: 'flex', justifyContent: 'center', flexDirection: 'column', marginBottom: 40, paddingBottom: 40, paddingHorizontal: 20 }}
                         >
-                            <Pressable onPress={pickImage} >
-                                <Text>Selecione Uma Imagem</Text>
+                            <Pressable
+                                onPress={pickImage}
+                                style={{ backgroundColor:'#64aaff', paddingVertical: 28, paddingHorizontal: 10, borderRadius: 10 }}
+                            >
+                                <Text style={{ textAlign: 'center', fontWeight: '700', letterSpacing: 2, color:'#f2f2f2', }}>Selecione Uma Imagem</Text>
                             </Pressable>
                         </View>
                     </ScrollView>
@@ -300,7 +323,7 @@ export default function Edit() {
                         {produto && produto.action == 'EDITAR' && (
                             <Pressable
                                 onPress={() => {
-                                    onUpdate(produto.id, newImage, newPrice, newDescont, newDescription, newStars, newKeyWords)
+                                    onUpdate(produto.id, newImage, newPrice, newDescont, newDescription, newStars, newKeyWords, slc)
                                 }}
                                 style={{ backgroundColor: '#64aaff', flexGrow: 1,  paddingVertical: 10 }}
                             >

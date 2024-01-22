@@ -39,107 +39,164 @@ export default function Card(props: CardProps){
     return(
         <Pressable
             key={props.id}        
-            style={{ flex: 1, flexDirection: 'column', padding: 10, margin: 10, backgroundColor: '#d9d9d9', borderRadius: 8, position: 'relative', marginRight: 34 }}
+            style={{ flex: 1, flexDirection: 'column', padding: 10, margin: 10, backgroundColor: '#d9d9d9', borderRadius: 8, alignItems: 'center', position: 'relative', marginHorizontal: 20, marginRight: 50 }}
             onPress={() => {
                 setModalVisible(true)
             }}
         >
             <Image
-                style={{ width: 280, height: 160, borderRadius: 8 }}
+                style={{ width: '100%', height: 160, borderRadius: 8 }}
                 source={{
                     uri: props.image,
                 }}
             />
             <View
+                style={{
+                    width: '100%',
+                    height: 10,
+                    borderBottomColor: 'black',
+                    borderBottomWidth: 1,
+                    marginVertical: 5,
+                }}
+            />
+            <View
                 style={{ flex: 1, flexDirection: 'column', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 5, width: '100%' }}
             >
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
-                    <Text style={{ flexGrow: 1 }}>
-                        Preço Original: 
+                <View style={{ width: '100%', flexDirection: 'column', justifyContent: "space-between", alignItems: 'flex-start' }}>
+                    <Text style={{ color: '#000000', fontWeight: '500', letterSpacing: 2, fontSize: 14, marginBottom: 6 }}>
+                        Preço Original
                     </Text>
-                    <Text>
+                    <Text style={{ color: '#0054bb', fontWeight: '500', letterSpacing: 2, fontSize: 16 }}>
                         R$ {props.price}
                     </Text>
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 10,
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                            marginVertical: 5,
+                        }}
+                    />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
-                    <Text style={{ flexGrow: 1 }}>
-                        Preço No Desconto: 
+                <View style={{ width: '100%', flexDirection: 'column', justifyContent: "space-between", alignItems: 'flex-start' }}>
+                    <Text style={{ color: '#000000', fontWeight: '500', letterSpacing: 2, fontSize: 14, marginBottom: 6 }}>
+                        Preço No Desconto
                     </Text>
-                    <Text>
+                    <Text style={{ color: '#0054bb', fontWeight: '500', letterSpacing: 2, fontSize: 16 }}>
                     R$ {((Number(props.price) / 100) * (100 - Number(props.descont))).toFixed(2)}
                     </Text>
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 10,
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                            marginVertical: 5,
+                        }}
+                    />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
-                    <Text style={{ flexGrow: 1 }}>
-                        Desconto: 
+                <View style={{ width: '100%', flexDirection: 'column', justifyContent: "space-between", alignItems: 'flex-start' }}>
+                    <Text style={{ color: '#000000', fontWeight: '500', letterSpacing: 2, fontSize: 14, marginBottom: 6 }}>
+                        Desconto
                     </Text>
-                    <Text>
+                    <Text style={{ color: '#0054bb', fontWeight: '500', letterSpacing: 2, fontSize: 16 }}>
                         {props.descont}%
                     </Text>
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 10,
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                            marginVertical: 5,
+                        }}
+                    />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: "space-between", alignItems: 'center'}}>
-                    <Text style={{ flexGrow: 1 }}>
-                        Stars: 
+                <View style={{ width: '100%', flexDirection: 'column', justifyContent: "space-between", alignItems: 'flex-start' }}>
+                    <Text style={{ color: '#000000', fontWeight: '500', letterSpacing: 2, fontSize: 14, marginBottom: 6 }}>
+                        Stars
                     </Text>
-                    <Text>
+                    <Text style={{ color: '#0054bb', fontWeight: '500', letterSpacing: 2, fontSize: 16 }}>
                         {props.stars}
                     </Text>
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 10,
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                            marginVertical: 5,
+                        }}
+                    />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: "space-between", alignItems: 'center'}}>
-                    <Text style={{ flexGrow: 1 }}>
-                        Description: 
+                <View style={{ width: '100%', flexDirection: 'column', flexWrap: 'wrap', justifyContent: "space-between", alignItems: 'flex-start' }}>
+                    <Text style={{ color: '#000000', fontWeight: '500', letterSpacing: 2, fontSize: 14, marginBottom: 6 }}>
+                        Description
                     </Text>
-                    <Text>
+                    <Text style={{ color: '#0054bb', fontWeight: '500', letterSpacing: 2, fontSize: 16 }}>
                         {props.description}
                     </Text>
+                    <View
+                        style={{
+                            width: '100%',
+                            height: 10,
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                            marginVertical: 5,
+                        }}
+                    />
                 </View>
-                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: "space-between", alignItems: 'center'}}>
-                    <Text style={{ flexGrow: 1 }}>
-                        KeyWords: 
+                <View style={{ width: '100%', flexDirection: 'column', flexWrap: 'wrap', justifyContent: "space-between", alignItems: 'flex-start' }}>
+                    <Text style={{ color: '#000000', fontWeight: '500', letterSpacing: 2, fontSize: 14, marginBottom: 6 }}>
+                        KeyWords
                     </Text>
-                    <Text>
+                    <Text style={{ color: '#0054bb', fontWeight: '500', letterSpacing: 2, fontSize: 16 }}>
                         {props.keywords}
                     </Text>
                 </View>
             </View>
 
-            <View style={{ position: 'absolute', top: 0, right: -34, width: 30, height: '100%' }}>
+            <View style={{ position: 'absolute', top: 0, right: -54, width: 46, height: '100%' }}>
                 <View
-                    style={{ borderRadius: 8, width: 30, height: 30, display: 'flex', alignItems: 'center',justifyContent: 'center', backgroundColor: '#66ed91', marginBottom: 10 }}
+                    style={{ borderRadius: 8, width: 36, height: 36, display: 'flex', alignItems: 'center',justifyContent: 'center', backgroundColor: '#66ed91', marginBottom: 16 }}
                 >
                     <Ionicons
+                        style={{ fontSize: 18, fontWeight: '700' }}
                         onPress={() => {
                             const action = 'ADICIONAR'
                             const timestamp = String(new Date().getTime())
                             alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                         }}
-                        name='add' 
+                        name='add-outline' 
                     />
                 </View>
 
                 <View
-                    style={{ borderRadius: 8, width: 30, height: 30, display: 'flex', alignItems: 'center',justifyContent: 'center', backgroundColor: '#66c2ed', marginBottom: 10 }}
+                    style={{ borderRadius: 8, width: 36, height: 36, display: 'flex', alignItems: 'center',justifyContent: 'center', backgroundColor: '#66c2ed', marginBottom: 16 }}
                     >
                     <Ionicons
+                        style={{ fontSize: 18, fontWeight: '700' }}
                         onPress={() => {
                             const action = 'EDITAR'
                             const timestamp = String(new Date().getTime())
                             alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                         }}
-                        name='pencil' 
+                        name='pencil-outline' 
                     />
                 </View>
 
                 <View
-                    style={{ borderRadius: 8, width: 30, height: 30, display: 'flex', alignItems: 'center',justifyContent: 'center', backgroundColor: '#ed6666', marginBottom: 10 }}
+                    style={{ borderRadius: 8, width: 36, height: 36, display: 'flex', alignItems: 'center',justifyContent: 'center', backgroundColor: '#ed6666', marginBottom: 16 }}
                 >
                     <Ionicons
+                        style={{ fontSize: 18, fontWeight: '700' }}
                         onPress={() => {
                             const action = 'DELETAR'
                             const timestamp = String(new Date().getTime())
                             alteredInfosProduct('Edit', props.descont, props.price, props.image, props.description, props.stars, props.keywords, props.id, action, timestamp)
                         }}
-                        name='trash' 
+                        name='trash-outline' 
                     />
                 </View>
             </View>
